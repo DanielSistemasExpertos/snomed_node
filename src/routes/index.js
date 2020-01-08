@@ -7,37 +7,37 @@ const Product = require('../models/product');
 //metodo para obtener terminos de la API snomed y mostrarlos
 const getSnomed = async(req, res) => {
     const termino = req.params.term;
+    // si el término tiene espacios formateo el termino
+    const termino_formateado = termino.replace(/\s/g,"%20");
     
-    //Lets configure and request
-    url = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2019-10-31/descriptions?&limit=100&term=' + termino + '&active=true&conceptActive=true&lang=english';
-    console.log(url);
-    // return;
-    // url = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2019-10-31/descriptions?&limit=100&term=banana&active=true&conceptActive=true&lang=english';
+    url = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2019-10-31/descriptions?&limit=100&term=' + termino_formateado + '&active=true&conceptActive=true&lang=english';
+    
     request.get(url, (error, response, body) => {
         if(error) {
             return console.dir(error);
         }
         var itemsTerm = '';
-        if(body.items != ''){
+        //convertir json a js
             
-            //convertir json a js
-            body = JSON.parse(body);
+        body = JSON.parse(body);
+        if(body.totalElements > 0 ){
             itemsTerm = body.items;
+            //envio a la vista
+            res.render('snomed/term', {
+                itemsTerm,
+                // current: page,
+                // pages: Math.ceil(count / perPage)
+            });
             // console.log(body.items[0].term)
             
-            body['items'].forEach(item => {
-                // traits_name  =  Trai.Name;
-                // traits_score = Trai.Score;
-                console.log(' items term ' + item.term + ' item activo ' + item.active + "\n");
-            }); 
+            // body['items'].forEach(item => {
+            //     console.log(' items term ' + item.term + ' item activo ' + item.active + "\n");
+            // }); 
         // console.log(JSON.parse(body));
+        }else{
+            res.redirect('/snomed/');
         }
-        //envio a la vista
-        res.render('snomed/term', {
-            itemsTerm,
-            // current: page,
-            // pages: Math.ceil(count / perPage)
-        });
+        
     });
 }
 
