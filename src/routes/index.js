@@ -9,7 +9,7 @@ const getSnomed = async(req, res) => {
     const termino = req.params.term;
     // si el término tiene espacios formateo el termino
     const termino_formateado = termino.replace(/\s/g,"%20");
-    
+    // url = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2019-10-31/descriptions?&limit=100&term=neumon%C3%ADa%20neumoc%C3%B3cica&active=true&conceptActive=true&lang=english';
     url = 'https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/SNOMEDCT-ES/2019-10-31/descriptions?&limit=100&term=' + termino_formateado + '&active=true&conceptActive=true&lang=english';
     
     request.get(url, (error, response, body) => {
